@@ -9,20 +9,25 @@ import org.springframework.stereotype.Service;
 
 import de.tekup.rest.data.models.AddressEntity;
 import de.tekup.rest.data.models.PersonEntity;
+import de.tekup.rest.data.models.TelephoneNumberEntity;
 import de.tekup.rest.data.repositories.AddressRepository;
 import de.tekup.rest.data.repositories.PersonRepository;
+import de.tekup.rest.data.repositories.TelephoneNumberRepository;
 
 @Service
 public class PersonServiceImpl implements PersonService {
 	
 	private PersonRepository reposPerson;
 	private AddressRepository reposAddress;
+	private TelephoneNumberRepository reposTelephone;
 	
 	@Autowired
-	public PersonServiceImpl(PersonRepository reposPerson, AddressRepository reposAddress) {
+	public PersonServiceImpl(PersonRepository reposPerson, AddressRepository reposAddress,
+			TelephoneNumberRepository reposTelephone) {
 		super();
 		this.reposPerson = reposPerson;
 		this.reposAddress = reposAddress;
+		this.reposTelephone = reposTelephone;
 	}
 
 
@@ -47,13 +52,21 @@ public class PersonServiceImpl implements PersonService {
 	public PersonEntity createEntity(PersonEntity entity) {
 		// ajouter save de l'addresse
 		AddressEntity addressEntity = entity.getAddress();
-		System.err.println(addressEntity);
+		
 		AddressEntity addressEntityInBase = reposAddress.save(addressEntity);
 		
 		// update en niveau Person
 		addressEntityInBase.setPerson(entity);
-		 System.err.println(addressEntityInBase);
-		return reposPerson.save(entity);
+		 
+		PersonEntity personInBase = reposPerson.save(entity);
+		
+		for (TelephoneNumberEntity phone : entity.getPhones()) {
+			phone.setPerson(personInBase);
+			reposTelephone.save(phone);
+		}
+		
+		
+		return personInBase;
 	}
 
 	@Override
