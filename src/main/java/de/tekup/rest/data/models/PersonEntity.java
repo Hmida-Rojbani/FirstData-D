@@ -11,10 +11,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.ToString;
 
 
 @Entity
 @Data
+@ToString(exclude = "address")
 @Table(name = "Person")
 public class PersonEntity {
 	
