@@ -12,9 +12,13 @@ import javax.persistence.ManyToMany;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter@Setter
+@EqualsAndHashCode(of = {"title","type"})
 public class GamesEntity {
 	
 	@Id
@@ -29,4 +33,9 @@ public class GamesEntity {
 	@JsonIgnore
 	private List<PersonEntity> persons;
 
+
+
+
+
+	
 }

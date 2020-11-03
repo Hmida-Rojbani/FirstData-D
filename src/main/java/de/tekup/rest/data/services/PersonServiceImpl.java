@@ -72,12 +72,41 @@ public class PersonServiceImpl implements PersonService {
 		}
 		
 		List<GamesEntity> games = entity.getGames();
-		for (GamesEntity game : games) {
+		List<GamesEntity> gamesInBase = reposGames.findAll();
+		
+		games.forEach(game -> {
+			List<GamesEntity> gamesInBaseTmp= new ArrayList<>(gamesInBase);
+			gamesInBaseTmp.removeIf(gTmp -> ! gTmp.equals(game));
+			if(gamesInBaseTmp.isEmpty() ) {
+				List<PersonEntity> persons = new ArrayList<PersonEntity>();
+				persons.add(personInBase);
+				game.setPersons(persons);
+				reposGames.save(game);
+			}else {
+				gamesInBaseTmp.get(0).getPersons().add(personInBase);
+				reposGames.save(gamesInBaseTmp.get(0));
+			
+			}
+		});
+
+		/*for (GamesEntity game : games) {
+			// verify the existance of game on table
+			if(!gamesInBase.contains(game)) {
 			List<PersonEntity> persons = new ArrayList<PersonEntity>();
 			persons.add(personInBase);
 			game.setPersons(persons);
 			reposGames.save(game);
-		}
+			}else {
+				for (GamesEntity gameInBase : gamesInBase) {
+					if(gameInBase.equals(game)) {
+						gameInBase.getPersons().add(personInBase);
+						reposGames.save(gameInBase);
+						break;
+					}
+				}
+				
+			}
+		}*/
 		
 		
 		return personInBase;
