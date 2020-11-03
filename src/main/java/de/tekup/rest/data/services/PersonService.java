@@ -11,6 +11,7 @@ public interface PersonService {
 	PersonEntity createEntity(PersonEntity entity);
 	PersonEntity modifyEntity(long id, PersonEntity newEntity);
 	PersonEntity deleteEntity(long id);
+	public List<PersonEntity> getAllByOperator(String operator);
 	
 
 }
