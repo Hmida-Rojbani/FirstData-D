@@ -113,17 +113,31 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
-	public PersonEntity modifyEntity(long id, PersonEntity newEntity) {
-		PersonEntity entity = this.getEntityById(id);
+	// update for the new parts
+	public PersonEntity modifyEntity(long id, PersonEntity newPerson) {
+		PersonEntity oldPerson = this.getEntityById(id);
 		
-		if(newEntity.getName() != null)
-			entity.setName(newEntity.getName());
-		if(newEntity.getDateOfBirth() != null)
-			entity.setDateOfBirth(newEntity.getDateOfBirth());
-		if(newEntity.getAddress() != null)
-			entity.setAddress(newEntity.getAddress());
+		// modification de Person
+		if(newPerson.getName() != null)
+			oldPerson.setName(newPerson.getName());
+		if(newPerson.getDateOfBirth() != null)
+			oldPerson.setDateOfBirth(newPerson.getDateOfBirth());
+		// modification Address
+		AddressEntity newAddress = newPerson.getAddress();
+		AddressEntity oldAddress = oldPerson.getAddress();
 		
-		return reposPerson.save(entity);
+		if(newAddress.getNumber() != 0)
+			oldAddress.setNumber(newAddress.getNumber());
+		if(newAddress.getStreet() != null)
+			oldAddress.setStreet(newAddress.getStreet());
+		if(newAddress.getCity() != null)
+			oldAddress.setCity(newAddress.getCity());
+		
+		// modification phones
+		
+		// modification games
+		
+		return reposPerson.save(oldPerson);
 	}
 
 	@Override
