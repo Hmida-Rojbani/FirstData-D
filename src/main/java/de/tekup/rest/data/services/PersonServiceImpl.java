@@ -48,6 +48,7 @@ public class PersonServiceImpl implements PersonService {
 		return entity;
 	}
 
+	// take on consideration the GamesEntitys
 	@Override
 	public PersonEntity createEntity(PersonEntity entity) {
 		// ajouter save de l'addresse
