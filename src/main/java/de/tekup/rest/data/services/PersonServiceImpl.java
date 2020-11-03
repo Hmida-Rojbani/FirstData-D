@@ -1,9 +1,12 @@
 package de.tekup.rest.data.services;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -176,7 +179,33 @@ public class PersonServiceImpl implements PersonService {
 	
 	// All person with a given operator
 	public List<PersonEntity> getAllByOperator(String operator){
-		return null;
+		// version 1
+		/*List<PersonEntity> persons = reposPerson.findAll();
+		List<PersonEntity> returnPersons = new ArrayList<>();
+		for (PersonEntity person : persons) {
+			// filtrage
+			for (TelephoneNumberEntity phone : person.getPhones()) {
+				if(phone.getOperator().equalsIgnoreCase(operator)) {
+					returnPersons.add(person);
+					break;
+				}
+			}
+		}*/
+		// version 2
+		/*Set<PersonEntity> returnPersons = new HashSet<>();
+		List<TelephoneNumberEntity> phones = reposTelephone.findAll();
+		for (TelephoneNumberEntity phone : phones) {
+			if(phone.getOperator().equalsIgnoreCase(operator))
+				returnPersons.add(phone.getPerson());
+		}*/
+		// version 3 ( Java 8)
+		List<PersonEntity> returnPersons = reposTelephone.findAll()
+											.stream()
+											.filter(phone -> phone.getOperator().equalsIgnoreCase(operator))
+											.map(phone -> phone.getPerson())
+											.distinct()
+											.collect(Collectors.toList());
+		return returnPersons;
 	}
 
 }
