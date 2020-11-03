@@ -1,5 +1,6 @@
 package de.tekup.rest.data.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -8,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.tekup.rest.data.models.AddressEntity;
+import de.tekup.rest.data.models.GamesEntity;
 import de.tekup.rest.data.models.PersonEntity;
 import de.tekup.rest.data.models.TelephoneNumberEntity;
 import de.tekup.rest.data.repositories.AddressRepository;
+import de.tekup.rest.data.repositories.GamesRepository;
 import de.tekup.rest.data.repositories.PersonRepository;
 import de.tekup.rest.data.repositories.TelephoneNumberRepository;
 
@@ -20,14 +23,16 @@ public class PersonServiceImpl implements PersonService {
 	private PersonRepository reposPerson;
 	private AddressRepository reposAddress;
 	private TelephoneNumberRepository reposTelephone;
+	private GamesRepository reposGames;
 	
 	@Autowired
 	public PersonServiceImpl(PersonRepository reposPerson, AddressRepository reposAddress,
-			TelephoneNumberRepository reposTelephone) {
+			TelephoneNumberRepository reposTelephone, GamesRepository reposGames) {
 		super();
 		this.reposPerson = reposPerson;
 		this.reposAddress = reposAddress;
 		this.reposTelephone = reposTelephone;
+		this.reposGames = reposGames;
 	}
 
 
@@ -48,7 +53,7 @@ public class PersonServiceImpl implements PersonService {
 		return entity;
 	}
 
-	// take on consideration the GamesEntitys
+	// take on consideration the GamesEntity
 	@Override
 	public PersonEntity createEntity(PersonEntity entity) {
 		// ajouter save de l'addresse
@@ -64,6 +69,14 @@ public class PersonServiceImpl implements PersonService {
 		for (TelephoneNumberEntity phone : entity.getPhones()) {
 			phone.setPerson(personInBase);
 			reposTelephone.save(phone);
+		}
+		
+		List<GamesEntity> games = entity.getGames();
+		for (GamesEntity game : games) {
+			List<PersonEntity> persons = new ArrayList<PersonEntity>();
+			persons.add(personInBase);
+			game.setPersons(persons);
+			reposGames.save(game);
 		}
 		
 		

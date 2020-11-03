@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 @Entity
@@ -24,6 +26,7 @@ public class GamesEntity {
 	
 	@ManyToMany
 	@JoinTable(name = "PlayedBy")
+	@JsonIgnore
 	private List<PersonEntity> persons;
 
 }
