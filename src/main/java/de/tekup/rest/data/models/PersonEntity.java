@@ -23,6 +23,7 @@ import lombok.ToString;
 @Entity
 @Getter@Setter
 @Table(name = "Person")
+@ToString(of = {"id", "name", "dateOfBirth"})
 public class PersonEntity {
 	
 	@Id

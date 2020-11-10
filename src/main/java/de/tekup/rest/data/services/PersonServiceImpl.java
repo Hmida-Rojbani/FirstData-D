@@ -3,8 +3,12 @@ package de.tekup.rest.data.services;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -226,8 +230,32 @@ public class PersonServiceImpl implements PersonService {
 		
 		//Persons who play the type of game the most played.
 		public List<PersonEntity> getPersonsPlayMostType(){
+			Map<String, Set<PersonEntity>> map = new HashMap<>();
+			List<GamesEntity> games = reposGames.findAll();
 			
-			return null;
+			for (GamesEntity game : games) {
+				if(map.containsKey(game.getType())) {
+					map.get(game.getType()).addAll(game.getPersons());
+				}else {
+					map.put(game.getType(), new HashSet<>(game.getPersons()));
+				}
+			}
+			
+			List<PersonEntity> persons = new ArrayList<>();
+			
+			for (Set<PersonEntity> setPerson : map.values()) {
+				if(setPerson.size() > persons.size())
+					persons = new ArrayList<>(setPerson);
+			}
+			
+			// with java 8
+			/*map.values()
+			.stream()
+			.max(Comparator.comparing(list -> list.size()))
+			.ifPresent(list -> persons.addAll(list));
+			*/
+			
+			return persons;
 		}
 
 		
