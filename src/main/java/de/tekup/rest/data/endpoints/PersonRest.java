@@ -62,6 +62,11 @@ public class PersonRest {
 		return service.deleteEntity(id);
 	}
 	
+	@GetMapping("/average/age")
+	public double getPersonsAverageAge() {
+		return service.getAverageAge();
+	}
+	
 	@ExceptionHandler(NoSuchElementException.class)
 	public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException e) {
 		return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);

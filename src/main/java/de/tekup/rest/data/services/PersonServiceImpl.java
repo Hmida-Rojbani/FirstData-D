@@ -207,5 +207,17 @@ public class PersonServiceImpl implements PersonService {
 											.collect(Collectors.toList());
 		return returnPersons;
 	}
+	
+		// Average age of all Persons
+		public double getAverageAge() {
+			return 0;
+		}
+		
+		//Persons who play the type of game the most played.
+
+		
+		// Display the games type and the number of games for each type;
+
+
 
 }
