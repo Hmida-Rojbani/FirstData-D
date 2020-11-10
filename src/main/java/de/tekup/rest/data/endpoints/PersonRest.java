@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.tekup.rest.data.dto.GameType;
+import de.tekup.rest.data.dto.PersonDTO;
 import de.tekup.rest.data.models.PersonEntity;
 import de.tekup.rest.data.services.PersonService;
 
@@ -38,8 +39,9 @@ public class PersonRest {
 	}
 	
 	@GetMapping("/{id}")
-	public PersonEntity getById(@PathVariable("id")long id) {
-		return service.getEntityById(id);
+	public PersonDTO getById(@PathVariable("id")long id) {
+		PersonEntity person = service.getEntityById(id);
+		return new PersonDTO(person.getId(), person.getName(), person.getDateOfBirth());
 	}
 	
 	@GetMapping("operator/{operator}")
