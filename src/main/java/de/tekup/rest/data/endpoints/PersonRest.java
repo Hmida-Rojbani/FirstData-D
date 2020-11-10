@@ -67,6 +67,11 @@ public class PersonRest {
 		return service.getAverageAge();
 	}
 	
+	@GetMapping("/type/most")
+	public List<PersonEntity> getPersonsPlayType() {
+		return service.getPersonsPlayMostType();
+	}
+	
 	@ExceptionHandler(NoSuchElementException.class)
 	public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException e) {
 		return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);

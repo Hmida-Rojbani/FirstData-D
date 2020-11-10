@@ -13,6 +13,7 @@ public interface PersonService {
 	PersonEntity deleteEntity(long id);
 	public List<PersonEntity> getAllByOperator(String operator);
 	public double getAverageAge();
+	public List<PersonEntity> getPersonsPlayMostType();
 	
 
 }
