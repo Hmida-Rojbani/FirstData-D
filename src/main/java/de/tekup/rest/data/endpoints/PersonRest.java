@@ -78,6 +78,11 @@ public class PersonRest {
 		return service.getTypesAndNumber();
 	}
 	
+	@GetMapping("/name/{name}")
+	public PersonEntity getByName(@PathVariable("name")String name) {
+		return service.getPersonByName(name);
+	}
+	
 	@ExceptionHandler(NoSuchElementException.class)
 	public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException e) {
 		return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);

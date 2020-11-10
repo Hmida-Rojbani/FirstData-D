@@ -16,6 +16,7 @@ public interface PersonService {
 	public double getAverageAge();
 	public List<PersonEntity> getPersonsPlayMostType();
 	public List<GameType> getTypesAndNumber();
+	public PersonEntity getPersonByName(String name);
 	
 
 }

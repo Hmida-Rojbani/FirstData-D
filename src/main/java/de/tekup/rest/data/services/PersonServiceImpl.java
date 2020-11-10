@@ -212,7 +212,8 @@ public class PersonServiceImpl implements PersonService {
 											.map(phone -> phone.getPerson())
 											.distinct()
 											.collect(Collectors.toList());
-		return returnPersons;
+		//return returnPersons;
+		return reposTelephone.getPersonsByOperator(operator);
 	}
 	
 		// Average age of all Persons
@@ -275,6 +276,24 @@ public class PersonServiceImpl implements PersonService {
 				}
 			}
 			return listGames;
+		}
+		
+		// return a person by name 
+		public PersonEntity getPersonByName(String name) {
+			/*List<PersonEntity> persons = reposPerson.findAll();
+			
+			for (PersonEntity person : persons) {
+				if(person.getName().equals(name))
+					return person;
+			}
+			
+			throw new NoSuchElementException("Person with this name is not found");
+		*/
+			//Optional<PersonEntity> opt = reposPerson.getAvecNom(name);
+			Optional<PersonEntity> opt = reposPerson.findByNameIgnoreCase(name);
+			
+			return opt.orElseThrow(() -> new NoSuchElementException("Person with this name is not found"));
+		
 		}
 
 
