@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import de.tekup.rest.data.dto.GameType;
 import de.tekup.rest.data.models.AddressEntity;
 import de.tekup.rest.data.models.GamesEntity;
 import de.tekup.rest.data.models.PersonEntity;
@@ -260,7 +261,21 @@ public class PersonServiceImpl implements PersonService {
 
 		
 		// Display the games type and the number of games for each type;
-
+		public List<GameType> getTypesAndNumber(){
+			
+			List<GameType> listGames = new ArrayList<>();
+			List<GamesEntity> games = reposGames.findAll();
+			
+			for (GamesEntity game : games) {
+				GameType gameType = new GameType(game.getType(), 1);
+				if (listGames.contains(gameType)) {
+					listGames.get(listGames.indexOf(gameType)).increment();
+				}else {
+					listGames.add(gameType);
+				}
+			}
+			return listGames;
+		}
 
 
 }
