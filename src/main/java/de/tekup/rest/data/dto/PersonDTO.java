@@ -13,6 +13,7 @@ public class PersonDTO {
 	
 	private long id;
 	private String name;
-	private LocalDate dateOfBirth;
+	private int age;
+	private String fullAddress;
 
 }

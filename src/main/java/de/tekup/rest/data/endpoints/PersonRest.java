@@ -3,9 +3,14 @@ package de.tekup.rest.data.endpoints;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.validation.Valid;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.tekup.rest.data.dto.GameType;
 import de.tekup.rest.data.dto.PersonDTO;
+import de.tekup.rest.data.dto.PersonRequest;
 import de.tekup.rest.data.models.PersonEntity;
 import de.tekup.rest.data.services.PersonService;
 
@@ -26,6 +32,7 @@ import de.tekup.rest.data.services.PersonService;
 public class PersonRest {
 	
 	private PersonService service;
+	private ModelMapper mapper = new ModelMapper();
 
 	@Autowired
 	public PersonRest(PersonService service) {
@@ -40,8 +47,9 @@ public class PersonRest {
 	
 	@GetMapping("/{id}")
 	public PersonDTO getById(@PathVariable("id")long id) {
-		PersonEntity person = service.getEntityById(id);
-		return new PersonDTO(person.getId(), person.getName(), person.getDateOfBirth());
+		//PersonEntity person = service.getEntityById(id);
+		//return new PersonDTO(person.getId(), person.getName(), person.getDateOfBirth());
+		return mapper.map(service.getEntityById(id), PersonDTO.class);
 	}
 	
 	@GetMapping("operator/{operator}")
@@ -50,7 +58,8 @@ public class PersonRest {
 	}
 	
 	@PostMapping
-	public PersonEntity createPerson(@RequestBody PersonEntity person) {
+	public PersonDTO createPerson(@Valid @RequestBody PersonRequest person) {
+		
 		return service.createEntity(person);
 	}
 	
@@ -90,7 +99,16 @@ public class PersonRest {
 		return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
 	}
 	
-	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+		 // To Return 1 validation error
+		//return new ResponseEntity<String>(e.getBindingResult().getAllErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST);
+		StringBuilder errors = new StringBuilder();
+		for (FieldError error : e.getBindingResult().getFieldErrors()) {
+			errors.append(error.getField() + ": "+ error.getDefaultMessage()+".\n");
+		}
+		return new ResponseEntity<String>(errors.toString(), HttpStatus.BAD_REQUEST);
+	}
 	
 
 }

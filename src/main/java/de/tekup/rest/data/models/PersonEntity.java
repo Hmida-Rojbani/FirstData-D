@@ -1,6 +1,7 @@
 package de.tekup.rest.data.models;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,6 +15,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.modelmapper.ModelMapper;
+
+import de.tekup.rest.data.dto.AddressRequest;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,5 +47,18 @@ public class PersonEntity {
 	
 	@ManyToMany(mappedBy = "persons", cascade = CascadeType.REMOVE)
 	private List<GamesEntity> games;
+	
+	public int getAge() {
+		return (int) ChronoUnit.YEARS.between(dateOfBirth, LocalDate.now());
+	}
+	
+	public String getFullAddress() {
+		return address.getNumber()+" "+address.getStreet()+", "+address.getCity()+".";
+	}
+	
+	public void setAddress(AddressRequest addr) {
+		 ModelMapper mapper = new ModelMapper();
+		address= mapper.map(addr, AddressEntity.class);
+	}
 
 }

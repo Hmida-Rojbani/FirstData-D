@@ -14,10 +14,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.tekup.rest.data.dto.GameType;
+import de.tekup.rest.data.dto.PersonDTO;
+import de.tekup.rest.data.dto.PersonRequest;
 import de.tekup.rest.data.models.AddressEntity;
 import de.tekup.rest.data.models.GamesEntity;
 import de.tekup.rest.data.models.PersonEntity;
@@ -34,15 +37,18 @@ public class PersonServiceImpl implements PersonService {
 	private AddressRepository reposAddress;
 	private TelephoneNumberRepository reposTelephone;
 	private GamesRepository reposGames;
+	private ModelMapper mapper;
 
 	@Autowired
 	public PersonServiceImpl(PersonRepository reposPerson, AddressRepository reposAddress,
-			TelephoneNumberRepository reposTelephone, GamesRepository reposGames) {
+			TelephoneNumberRepository reposTelephone, GamesRepository reposGames
+			,ModelMapper mapper) {
 		super();
 		this.reposPerson = reposPerson;
 		this.reposAddress = reposAddress;
 		this.reposTelephone = reposTelephone;
 		this.reposGames = reposGames;
+		this.mapper = mapper;
 	}
 
 	@Override
@@ -63,17 +69,18 @@ public class PersonServiceImpl implements PersonService {
 
 	// take on consideration the GamesEntity
 	@Override
-	public PersonEntity createEntity(PersonEntity entity) {
+	public PersonDTO createEntity(PersonRequest personReq) {
+		PersonEntity entity = mapper.map(personReq, PersonEntity.class);
 		// ajouter save de l'addresse
 		AddressEntity addressEntity = entity.getAddress();
-
+		if(addressEntity != null) {
 		AddressEntity addressEntityInBase = reposAddress.save(addressEntity);
 
 		// update en niveau Person
 		addressEntityInBase.setPerson(entity);
-
+		}
 		PersonEntity personInBase = reposPerson.save(entity);
-
+		if(entity.getPhones() != null)
 		for (TelephoneNumberEntity phone : entity.getPhones()) {
 			phone.setPerson(personInBase);
 			reposTelephone.save(phone);
@@ -81,7 +88,7 @@ public class PersonServiceImpl implements PersonService {
 
 		List<GamesEntity> games = entity.getGames();
 		List<GamesEntity> gamesInBase = reposGames.findAll();
-
+		if(entity.getGames() != null)
 		games.forEach(game -> {
 			List<GamesEntity> gamesInBaseTmp = new ArrayList<>(gamesInBase);
 			gamesInBaseTmp.removeIf(gTmp -> !gTmp.equals(game));
@@ -109,7 +116,7 @@ public class PersonServiceImpl implements PersonService {
 		 * } }
 		 */
 
-		return personInBase;
+		return mapper.map(personInBase,PersonDTO.class);
 	}
 
 	@Override
